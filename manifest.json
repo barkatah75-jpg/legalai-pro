@@ -1,0 +1,61 @@
+{
+  "name": "LegalAI Pro — AI Legal Practice OS",
+  "short_name": "LegalAI Pro",
+  "description": "AI-powered legal practice management for Indian advocates. 25 modules: Case Analysis, Judgement Search, Billing, Evidence Organizer, Court Procedure AI aur bahut kuch.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0520",
+  "theme_color": "#1a0a3e",
+  "lang": "hi-IN",
+  "dir": "ltr",
+  "categories": ["productivity", "business", "legal"],
+  "iarc_rating_id": "",
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "icons/icon-72x72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-96x96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-128x128.png", "sizes": "128x128", "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-144x144.png", "sizes": "144x144", "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "maskable any" },
+    { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "LegalAI Pro Dashboard"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "AI Case Analysis",
+      "short_name": "Case AI",
+      "description": "AI se case analyze karein",
+      "url": "/index.html#consult",
+      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Legal GPT Chat",
+      "short_name": "Legal GPT",
+      "description": "Legal questions ke liye AI chat",
+      "url": "/index.html#legalchat",
+      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Billing & GST",
+      "short_name": "Billing",
+      "description": "GST invoice generate karein",
+      "url": "/index.html#billing",
+      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "protocol_handlers": [],
+  "file_handlers": []
+}
