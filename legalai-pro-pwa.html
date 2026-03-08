@@ -515,11 +515,32 @@ textarea{resize:vertical;min-height:72px;}
 .audi:last-child{border-bottom:none;}
 .auic{width:28px;height:28px;border-radius:7px;background:rgba(120,80,255,.1);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 
+
+.ipc-tab{padding:5px 12px;border-radius:20px;border:1px solid var(--bdr2);background:var(--c2);color:var(--mut);font-size:11px;cursor:pointer;font-weight:600;transition:.2s}
+.ipc-tab.active,.ipc-tab:hover{background:var(--gold2);color:#1a0a3e;border-color:var(--gold2)}
+.ipc-item{padding:9px 12px;border-radius:9px;cursor:pointer;font-size:12px;margin-bottom:4px;border:1px solid transparent;transition:.15s;display:flex;justify-content:space-between;align-items:center}
+.ipc-item:hover{background:var(--c2);border-color:var(--bdr2)}
+.ipc-item.active{background:rgba(201,168,76,.12);border-color:var(--gold2);color:var(--gold2);font-weight:700}
+.ipc-badge{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;white-space:nowrap}
+.ipc-badge.bns{background:rgba(0,212,130,.15);color:#00d482}
+.ipc-badge.bnss{background:rgba(0,180,255,.15);color:#00b4ff}
+.ipc-badge.ipc{background:rgba(255,150,50,.12);color:#ff9632}
+.ipc-badge.crpc{background:rgba(120,80,255,.15);color:var(--pur2)}
+.ipc-badge.cpc{background:rgba(255,200,0,.12);color:var(--gold2)}
+.ipc-badge.special{background:rgba(255,80,100,.12);color:#ff5064}
+
 /* ecourts INTEGRATION */
 .ecourt-res{background:var(--c2);border:1px solid var(--bdr2);border-radius:11px;padding:13px;margin-bottom:9px;}
 .ecourt-status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;}
 
 </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -568,8 +589,17 @@ textarea{resize:vertical;min-height:72px;}
     <div class="fg">
       <div><label class="fl">Email Address</label><input id="l-em" type="email" placeholder="advocate@lawfirm.com" value="demo@legalai.in"></div>
       <div><label class="fl">Password</label><input id="l-pw" type="password" placeholder="Password" value="demo1234"></div>
-      <button class="bp" onclick="doLogin()">🔐 Login Karen</button>
-      <button class="bgold" onclick="demoLogin()">⚡ Quick Demo Access</button>
+      <button class="abtn" onclick="doLogin()">Login Karen</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <span onclick="forgotPassword()" style="font-size:11px;color:var(--cyn);cursor:pointer;text-decoration:underline">Password bhool gaye?</span>
+        <span onclick="demoLogin()" style="font-size:11px;color:var(--gold2);cursor:pointer">Demo try karein</span>
+      </div>
+      <div style="margin:12px 0;text-align:center;font-size:11px;color:var(--mut)">&#8212; ya &#8212;</div>
+      <button onclick="signInWithGoogle()" style="width:100%;padding:11px;background:#fff;color:#333;border:1.5px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Google se Login Karen
+      </button>
+      
       <div style="text-align:center;font-size:12px;color:var(--mut)">Account nahi hai? <span style="color:var(--pur2);cursor:pointer" onclick="goTo('S-plan')">Register Karen →</span></div>
     </div>
   </div>
@@ -1037,40 +1067,44 @@ textarea{resize:vertical;min-height:72px;}
 
     <!-- ─ IPC/CrPC BROWSER ─ -->
     <div id="pg-ipcbrowser" class="pg">
-      <div style="margin-bottom:16px">
-        <div style="font-size:18px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--gold2);margin-bottom:6px">📚 IPC / CrPC / CPC Section Browser</div>
-        <div style="font-size:12px;color:var(--mut)">AI se kisi bhi section ka detailed explanation aur case examples paaein</div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:18px;font-weight:700;font-family:'Cormorant Garamond',serif;color:var(--gold2);margin-bottom:4px">&#128218; Law Section Browser</div>
+        <div style="font-size:12px;color:var(--mut)">IPC / BNS 2023 / CrPC / BNSS 2023 / CPC / Special Acts — AI detailed explanation</div>
+      </div>
+      <div style="margin-bottom:12px;display:flex;gap:8px">
+        <input class="sinp" id="ipcSearch" placeholder="&#128269; Search... (e.g. murder, bail, 302, cheque)" oninput="searchIPC()" style="background:var(--c2);flex:1">
+        <button onclick="loadCustomIPC()" class="bp" style="padding:9px 14px;font-size:12px;white-space:nowrap">AI Search</button>
+      </div>
+      <div id="ipcTabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="ipc-tab active" onclick="filterCat(this,'all')">All</button>
+        <button class="ipc-tab" onclick="filterCat(this,'bns')">&#127381; BNS 2023</button>
+        <button class="ipc-tab" onclick="filterCat(this,'bnss')">&#127381; BNSS 2023</button>
+        <button class="ipc-tab" onclick="filterCat(this,'ipc')">IPC (Old)</button>
+        <button class="ipc-tab" onclick="filterCat(this,'crpc')">CrPC (Old)</button>
+        <button class="ipc-tab" onclick="filterCat(this,'cpc')">CPC</button>
+        <button class="ipc-tab" onclick="filterCat(this,'special')">Special Acts</button>
+        <button class="ipc-tab" onclick="filterCat(this,'family')">Family Law</button>
+        <button class="ipc-tab" onclick="filterCat(this,'property')">Property</button>
+        <button class="ipc-tab" onclick="filterCat(this,'labour')">Labour</button>
+        <button class="ipc-tab" onclick="filterCat(this,'cyber')">Cyber</button>
       </div>
       <div class="ipc-grid">
         <div>
-          <div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Popular Sections</div>
-          <div class="ipc-list" id="ipcList">
-            <div class="ipc-item active" onclick="loadIPC(this,'IPC 302','Murder')">IPC 302 — Murder</div>
-            <div class="ipc-item" onclick="loadIPC(this,'IPC 420','Cheating')">IPC 420 — Cheating</div>
-            <div class="ipc-item" onclick="loadIPC(this,'IPC 376','Rape')">IPC 376 — Rape</div>
-            <div class="ipc-item" onclick="loadIPC(this,'IPC 498A','Cruelty by Husband')">IPC 498A — Dowry Cruelty</div>
-            <div class="ipc-item" onclick="loadIPC(this,'IPC 307','Attempt to Murder')">IPC 307 — Attempt Murder</div>
-            <div class="ipc-item" onclick="loadIPC(this,'IPC 354','Assault on Woman')">IPC 354 — Assault Woman</div>
-            <div class="ipc-item" onclick="loadIPC(this,'IPC 406','Criminal Breach of Trust')">IPC 406 — Breach of Trust</div>
-            <div class="ipc-item" onclick="loadIPC(this,'CrPC 438','Anticipatory Bail')">CrPC 438 — Anticipatory Bail</div>
-            <div class="ipc-item" onclick="loadIPC(this,'CrPC 439','Regular Bail')">CrPC 439 — Regular Bail</div>
-            <div class="ipc-item" onclick="loadIPC(this,'CPC Section 9','Civil Suit Jurisdiction')">CPC S.9 — Civil Jurisdiction</div>
-            <div class="ipc-item" onclick="loadIPC(this,'NI Act 138','Cheque Bounce')">NI Act 138 — Cheque Bounce</div>
-            <div class="ipc-item" onclick="loadIPC(this,'Hindu Marriage Act 13','Divorce Grounds')">HMA 13 — Divorce</div>
-            <div class="ipc-item" onclick="loadIPC(this,'POCSO Act','Child Protection')">POCSO — Child Protection</div>
-            <div class="ipc-item" onclick="loadIPC(this,'SC/ST Act','Atrocities Act')">SC/ST Prevention Act</div>
-          </div>
-          <div style="margin-top:12px">
-            <input class="sinp" id="ipcSearch" placeholder="🔍 Section search karen..." oninput="searchIPC()" style="background:var(--c2)">
-          </div>
+          <div id="ipcList" style="max-height:540px;overflow-y:auto"></div>
         </div>
-        <div class="panel">
-          <div class="ph"><div class="phi gold">📚</div><h3 id="ipcTitle">IPC Section 302 — Murder</h3></div>
-          <div id="ipcDetail" style="padding:16px"><div class="est" style="height:200px"><div class="eic" style="font-size:36px">📚</div><p>Section select karen</p></div></div>
+        <div class="panel" style="position:sticky;top:0">
+          <div class="ph"><div class="phi gold">&#128218;</div><h3 id="ipcTitle">Section Browser</h3></div>
+          <div style="padding:10px 16px 6px;display:flex;gap:8px">
+            <button onclick="copyIPC()" style="flex:1;padding:7px;background:var(--c2);border:1px solid var(--bdr2);border-radius:8px;font-size:11px;color:var(--fg);cursor:pointer">&#128203; Copy</button>
+            <button onclick="printIPC()" style="flex:1;padding:7px;background:var(--c2);border:1px solid var(--bdr2);border-radius:8px;font-size:11px;color:var(--fg);cursor:pointer">&#128438; Print</button>
+            <button onclick="addToCase()" style="flex:1;padding:7px;background:rgba(120,80,255,.15);border:1px solid var(--pur2);border-radius:8px;font-size:11px;color:var(--pur2);cursor:pointer">+ Case</button>
+          </div>
+          <div id="ipcDetail" style="padding:16px">
+            <div class="est" style="height:200px"><div class="eic" style="font-size:36px">&#128218;</div><p>Section select karen</p></div>
+          </div>
         </div>
       </div>
     </div>
-
     <!-- ─ FEE CALCULATOR ─ -->
     <div id="pg-feecalc" class="pg">
       <div style="margin-bottom:16px">
@@ -1828,7 +1862,73 @@ textarea{resize:vertical;min-height:72px;}
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ════════ DB -- localStorage ════════
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LEGALAI PRO — CONFIGURATION
+// Yahan apni real keys daalo pehle deploy karne se pehle
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// FIREBASE: console.firebase.google.com > Project Settings > Web App
+const FIREBASE_CONFIG = {
+  apiKey:            "YOUR_FIREBASE_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+
+// RAZORPAY: razorpay.com > Settings > API Keys
+// Test mode ke liye: rzp_test_... | Live ke liye: rzp_live_...
+const RAZORPAY_KEY = "rzp_test_YOUR_KEY_HERE";
+
+// AI PROXY: Cloudflare Worker URL (setup guide niche dekho)
+const AI_PROXY_URL  = "https://legalai-proxy.YOUR_SUBDOMAIN.workers.dev";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FIREBASE INIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let firebaseApp=null, fbAuth=null, fbDb=null, currentUser=null;
+
+function initFirebase(){
+  try{
+    if(!FIREBASE_CONFIG.apiKey||FIREBASE_CONFIG.apiKey.includes('YOUR_')){
+      console.warn('[LegalAI] Firebase not configured - localStorage mode');
+      return false;
+    }
+    firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+    fbAuth = firebase.auth();
+    fbDb   = firebase.firestore();
+    fbAuth.onAuthStateChanged(function(user){
+      currentUser = user;
+      if(user){ loadUserData(user.uid); }
+    });
+    console.log('[LegalAI] Firebase ready');
+    return true;
+  }catch(e){ console.error('[LegalAI] Firebase error:',e); return false; }
+}
+
+async function saveUserData(uid, data){
+  if(!fbDb) return;
+  try{ await fbDb.collection('advocates').doc(uid).set(data,{merge:true}); }
+  catch(e){ console.error('Firestore save:',e); }
+}
+
+async function loadUserData(uid){
+  if(!fbDb) return;
+  try{
+    const snap = await fbDb.collection('advocates').doc(uid).get();
+    if(snap.exists){
+      const d = snap.data();
+      if(d.profile) DB.set('doc', d.profile);
+      if(d.plan)    DB.set('plan', d.plan);
+      if(d.planExpiry) DB.set('planExpiry', d.planExpiry);
+      updateDash();
+    }
+  }catch(e){ console.error('Firestore load:',e); }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━ DB ━━ localStorage ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -- localStorage ════════
 const DB={
   get(k){try{const v=localStorage.getItem('lgl2_'+k);return v?JSON.parse(v):null;}catch{return null;}},
   set(k,v){try{localStorage.setItem('lgl2_'+k,JSON.stringify(v));}catch{}},
@@ -1847,29 +1947,48 @@ function showApiKeyPrompt(){
 
 // ═══ UNIVERSAL AI CALL -- Real API or Smart Demo ═══
 async function callClaude(params){
-  var key=getApiKey();
-  if(key){
+  // 1. AI Proxy (no API key needed by user)
+  if(AI_PROXY_URL&&!AI_PROXY_URL.includes('YOUR_SUBDOMAIN')){
     try{
-      var r=await fetch('https://api.anthropic.com/v1/messages',{
+      var r=await fetch(AI_PROXY_URL+'/ai',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'X-User-Id': currentUser?currentUser.uid:'demo',
+          'X-Plan': DB.get('plan')||'basic'
+        },
+        body:JSON.stringify(params)
+      });
+      if(!r.ok) throw new Error('Proxy HTTP '+r.status);
+      var d=await r.json();
+      if(d.error) throw new Error(d.error.message||d.error);
+      return d;
+    }catch(e){ console.warn('[AI] Proxy failed:',e.message); }
+  }
+  // 2. Direct Anthropic (user ki own key)
+  var key=DB.get('apiKey');
+  if(key&&key.startsWith('sk-ant-')){
+    try{
+      var r2=await fetch('https://api.anthropic.com/v1/messages',{
         method:'POST',
         headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
         body:JSON.stringify(params)
       });
-      var d=await r.json();
-      if(d.error)throw new Error(d.error.message);
-      return d;
+      var d2=await r2.json();
+      if(d2.error) throw new Error(d2.error.message);
+      return d2;
     }catch(e){
-      if(e.message&&e.message.includes('401'))throw new Error('Invalid API key. Settings > API Key mein check karein.');
+      if(e.message&&e.message.includes('401')) throw new Error('API key invalid hai');
       throw e;
     }
   }
-  // DEMO MODE -- rich keyword-based responses
+  // 3. Demo fallback
   var prompt='';
   if(params.messages&&params.messages.length){
     var last=params.messages[params.messages.length-1];
     prompt=(typeof last.content==='string'?last.content:JSON.stringify(last.content)||'').toLowerCase();
   }
-  if(params.system)prompt+=' '+params.system.toLowerCase();
+  if(params.system) prompt+=' '+params.system.toLowerCase();
   return demoResponse(prompt,params);
 }
 
@@ -1976,7 +2095,7 @@ function demoResponse(prompt,params){
 // ════════ GLOBALS ════════
 let selPlan='firm',selPayM='upi',aiData=null,extraNotes=[],voiceR=null,voiceText='',
     refreshIv=null,uploadB64=null,uploadMime=null,chatHistory=[],selectedContract='Sale Agreement',
-    currentIPC='IPC 302';
+    currentIPC='',currentCat='all';
 
 // ════════ SCREEN NAV ════════
 function goTo(id){document.querySelectorAll('.scr').forEach(s=>s.classList.add('off'));const el=document.getElementById(id);if(el)el.classList.remove('off');}
@@ -1989,29 +2108,82 @@ function showApp(){
 
 // ════════ AUTH ════════
 function doLogin(){
-  const em=document.getElementById('l-em').value.trim();
-  const pw=document.getElementById('l-pw').value;
-  if(!em||!pw){toast('⚠️ Email aur password bharein','err');return;}
+  var em=(document.getElementById('l-em')||{}).value.trim();
+  var pw=(document.getElementById('l-pw')||{}).value;
+  if(!em||!pw){toast('Email aur password bharein','err');return;}
   if(em==='demo@legalai.in'&&pw==='demo1234'){demoLogin();return;}
-  const u=DB.get('user');
-  if(!u||u.email!==em||u.pwd!==pw){toast('⚠️ Email ya password galat hai','err');return;}
-  toast('OK Login successful!');showApp();
+  if(fbAuth){
+    var btn=document.querySelector('#S-login .abtn');
+    if(btn){btn.disabled=true;btn.textContent='Logging in...';}
+    fbAuth.signInWithEmailAndPassword(em,pw).then(function(c){
+      currentUser=c.user;toast('Login successful!','grn');
+      return loadUserData(c.user.uid);
+    }).then(function(){showApp();})
+    .catch(function(e){
+      var b=document.querySelector('#S-login .abtn');
+      if(b){b.disabled=false;b.textContent='Login Karen';}
+      var msg='Login failed';
+      if(e.code==='auth/user-not-found') msg='Email registered nahi hai';
+      else if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') msg='Password galat hai';
+      else if(e.code==='auth/too-many-requests') msg='Bahut zyada attempts - thodi der baad try karein';
+      else if(e.code==='auth/network-request-failed') msg='Network error - internet check karein';
+      toast(msg,'err');
+    });
+    return;
+  }
+  var u=DB.get('user');
+  if(!u||u.email!==em||u.pwd!==pw){toast('Email ya password galat hai','err');return;}
+  toast('Login successful!','grn');showApp();
 }
+function forgotPassword(){
+  var em=(document.getElementById('l-em')||{}).value.trim();
+  if(!em){toast('Pehle email daalo','err');return;}
+  if(!fbAuth){toast('Firebase configured nahi hai','err');return;}
+  fbAuth.sendPasswordResetEmail(em)
+    .then(function(){toast('Reset email bhej diya! Inbox check karein.','grn');})
+    .catch(function(e){toast(e.code==='auth/user-not-found'?'Email registered nahi hai':'Reset failed','err');});
+}
+function signInWithGoogle(){
+  if(!fbAuth){toast('Firebase configured nahi hai','err');return;}
+  var provider=new firebase.auth.GoogleAuthProvider();
+  fbAuth.signInWithPopup(provider).then(function(r){
+    currentUser=r.user;
+    var isNew=r.additionalUserInfo&&r.additionalUserInfo.isNewUser;
+    if(isNew){
+      var p={name:currentUser.displayName||'',email:currentUser.email||'',mobile:'',clinic:'My Law Firm',spec:'Civil Law',qual:'LLB',reg:'BAR/'+Date.now().toString().slice(-6),address:'',plan:'basic'};
+      DB.set('doc',p);DB.set('plan','basic');
+      saveUserData(currentUser.uid,{profile:p,plan:'basic',email:currentUser.email,createdAt:new Date().toISOString()});
+      toast('Welcome to LegalAI Pro!','gold');
+    }else{
+      loadUserData(currentUser.uid);
+      toast('Google se login ho gaye!','grn');
+    }
+    showApp();
+  }).catch(function(e){
+    if(e.code!=='auth/popup-closed-by-user') toast('Google login failed','err');
+  });
+}
+
 function demoLogin(){
   if(!DB.get('doc')){DB.set('doc',{name:'Adv. Demo Sharma',mobile:'9876543210',clinic:'Demo Law Chamber',spec:'Civil Law',qual:'LLB, LLM',reg:'BAR/MH/2024/DEMO01',address:'Jamshedpur, Jharkhand -- 831001'});}
   toast('⚡ Demo mode active!','info');showApp();
 }
-function doLogout(){clearInterval(refreshIv);document.getElementById('app').style.display='none';goTo('S-welcome');aiData=null;extraNotes=[];chatHistory=[];toast('OK Logout ho gaye','info');}
-
-// ════════ PLAN & PAYMENT ════════
-const planPrices={solo:999,firm:2499,enterprise:7999};
-function pickPlan(plan,price){
-  selPlan=plan;
-  document.querySelectorAll('.pc').forEach(p=>p.classList.remove('sel'));
-  const el=document.getElementById('pl-'+plan);if(el)el.classList.add('sel');
-  const sh=document.getElementById('planAmtShow');if(sh)sh.textContent='₹'+price;
-  toast('OK '+plan.charAt(0).toUpperCase()+plan.slice(1)+' plan selected!','info');
+function doLogout(){
+  clearInterval(refreshIv);
+  if(fbAuth&&currentUser){
+    fbAuth.signOut().finally(function(){
+      currentUser=null;
+      document.getElementById('app').style.display='none';
+      goTo('S-welcome');aiData=null;extraNotes=[];chatHistory=[];
+      toast('Logout ho gaye','info');
+    });
+    return;
+  }
+  document.getElementById('app').style.display='none';
+  goTo('S-welcome');aiData=null;extraNotes=[];chatHistory=[];
+  toast('Logout ho gaye','info');
 }
+
 function updPaySteps(step){
   document.querySelectorAll('#S-pay .pstep').forEach((s,i)=>{s.className='pstep'+(i<step?' done':i===step?' cur':'');});
   const pa=document.getElementById('pay-amt');if(pa)pa.textContent='₹'+(planPrices[selPlan]||2499);
@@ -2030,23 +2202,96 @@ function fmtCard(el){let v=el.value.replace(/\D/g,'');v=v.match(/.{1,4}/g)?.join
 function fmtExp(el){let v=el.value.replace(/\D/g,'');if(v.length>=2)v=v.slice(0,2)+'/'+v.slice(2,4);el.value=v;}
 function walletPay(name){toast('OK '+name+' selected','info');}
 function processPayment(){
-  if(selPayM==='upi'){const utr=document.getElementById('utr').value.trim();if(!utr){toast('⚠️ UTR/Transaction ID enter karen','err');return;}toast('OK Payment verifying...','info');setTimeout(()=>{toast('🎉 Payment verified!','gold');goTo('S-account');updPaySteps(2);},1600);}
-  else if(selPayM==='card'){const cn=document.getElementById('cn').value.replace(/\s/g,'');if(cn.length<16){toast('⚠️ Valid card number enter karen','err');return;}toast('OK Processing...','info');setTimeout(()=>{toast('🎉 Payment verified!','gold');goTo('S-account');updPaySteps(2);},1500);}
-  else{goTo('S-account');updPaySteps(2);}
+  var amount = planPrices[selPlan]||2499;
+  var planLabel = selPlan.charAt(0).toUpperCase()+selPlan.slice(1);
+  var doc = DB.get('doc')||{};
+  if(!RAZORPAY_KEY||RAZORPAY_KEY.includes('YOUR_')){
+    _manualPay(amount);return;
+  }
+  var opts = {
+    key: RAZORPAY_KEY,
+    amount: amount*100,
+    currency: 'INR',
+    name: 'LegalAI Pro',
+    description: planLabel+' Plan - 1 Month',
+    image: 'icons/icon-192x192.png',
+    handler: function(resp){
+      toast('Payment done! ID: '+resp.razorpay_payment_id,'gold');
+      _activatePlan(selPlan, resp.razorpay_payment_id, amount);
+    },
+    prefill:{
+      name:  doc.name||'',
+      email: (currentUser&&currentUser.email)||'',
+      contact: doc.mobile||doc.phone||''
+    },
+    notes:{ plan:selPlan, source:'LegalAI Pro PWA' },
+    theme:{ color:'#7850ff' },
+    modal:{ ondismiss:function(){toast('Payment cancel kar diya','info');} }
+  };
+  try{
+    var rzp = new Razorpay(opts);
+    rzp.on('payment.failed',function(r){ toast('Payment failed: '+(r.error.description||'Error'),'err'); });
+    rzp.open();
+  }catch(e){ toast('Razorpay load nahi hua - manual payment try karein','err'); _manualPay(amount); }
 }
+function _manualPay(amount){
+  var utr=(document.getElementById('utr')||{}).value.trim();
+  if(!utr){toast('UTR/Transaction ID enter karein','err');return;}
+  if(utr.length<10){toast('Valid UTR ID daalo (10+ digits)','err');return;}
+  DB.set('pendingPayment',{utr:utr,plan:selPlan,amount:amount,date:new Date().toISOString()});
+  toast('Payment record ho gaya! 24 hrs mein verify hoga.','info');
+  setTimeout(function(){ _activatePlan(selPlan,'UTR-'+utr,amount); },1500);
+}
+function _activatePlan(plan,payId,amount){
+  var exp=new Date(); exp.setMonth(exp.getMonth()+1);
+  DB.set('plan',plan); DB.set('planExpiry',exp.toISOString());
+  DB.set('paymentId',payId); DB.set('paymentDate',new Date().toISOString());
+  if(currentUser&&fbDb){
+    saveUserData(currentUser.uid,{plan:plan,planExpiry:exp.toISOString(),paymentId:payId,paymentAmount:amount});
+  }
+  goTo('S-account'); updPaySteps(2);
+}
+
 function createAccount(){
-  const nm=document.getElementById('r-name').value.trim(),mob=document.getElementById('r-mob').value.trim();
-  const cli=document.getElementById('r-clinic').value.trim(),em=document.getElementById('r-email').value.trim();
-  const pw=document.getElementById('r-pwd').value,pw2=document.getElementById('r-pwd2').value;
-  if(!nm||!mob||!cli||!em||!pw){toast('⚠️ Sab required fields bharein','err');return;}
-  if(pw!==pw2){toast('⚠️ Passwords match nahi kar rahe','err');return;}
-  if(pw.length<8){toast('⚠️ Password 8+ characters ka hona chahiye','err');return;}
-  const u={email:em,pwd:pw,name:nm,mobile:mob,clinic:cli,spec:document.getElementById('r-spec').value,qual:document.getElementById('r-qual').value,plan:selPlan};
-  DB.set('user',u);
-  DB.set('doc',{name:nm,mobile:mob,clinic:cli,spec:u.spec,qual:u.qual,reg:'BAR/'+Date.now().toString().slice(-6),address:''});
-  toast('🎉 Account created! Login karen.','gold');
-  goTo('S-login');document.getElementById('l-em').value=em;
+  var nm=(document.getElementById('r-name')||{}).value.trim();
+  var mob=(document.getElementById('r-mob')||{}).value.trim();
+  var cli=(document.getElementById('r-clinic')||{}).value.trim();
+  var em=(document.getElementById('r-email')||{}).value.trim();
+  var pw=(document.getElementById('r-pwd')||{}).value;
+  var pw2=(document.getElementById('r-pwd2')||{}).value;
+  var spec=(document.getElementById('r-spec')||{}).value||'Civil Law';
+  var qual=(document.getElementById('r-qual')||{}).value||'LLB';
+  if(!nm||!mob||!cli||!em||!pw){toast('Sab required fields bharein','err');return;}
+  if(pw!==pw2){toast('Passwords match nahi kar rahe','err');return;}
+  if(pw.length<8){toast('Password 8+ characters ka hona chahiye','err');return;}
+  var profile={name:nm,mobile:mob,clinic:cli,spec:spec,qual:qual,email:em,reg:'BAR/'+Date.now().toString().slice(-6),address:'',plan:selPlan};
+  if(fbAuth){
+    var btn=document.querySelector('#S-account .abtn');
+    if(btn){btn.disabled=true;btn.textContent='Creating...';}
+    fbAuth.createUserWithEmailAndPassword(em,pw).then(function(c){
+      currentUser=c.user;
+      c.user.updateProfile({displayName:nm});
+      DB.set('doc',profile);DB.set('plan',selPlan);
+      return saveUserData(c.user.uid,{profile:profile,plan:selPlan,planExpiry:DB.get('planExpiry')||null,paymentId:DB.get('paymentId')||null,email:em,createdAt:new Date().toISOString()});
+    }).then(function(){
+      var b=document.querySelector('#S-account .abtn');
+      if(b){b.disabled=false;b.textContent='Account Activate Karen';}
+      toast('Account created! Welcome to LegalAI Pro!','gold');
+      goTo('S-success');setTimeout(function(){showApp();},2000);
+    }).catch(function(e){
+      var b=document.querySelector('#S-account .abtn');
+      if(b){b.disabled=false;b.textContent='Account Activate Karen';}
+      if(e.code==='auth/email-already-in-use') toast('Email already hai - login karein','err');
+      else toast('Account creation failed','err');
+    });
+    return;
+  }
+  DB.set('user',{email:em,pwd:pw,name:nm,mobile:mob,clinic:cli,spec:spec,qual:qual,plan:selPlan});
+  DB.set('doc',profile);
+  toast('Account created!','gold');
+  goTo('S-login');
 }
+
 
 // ════════ ADVOCATE PROFILE ════════
 function loadAdvocate(){
@@ -2143,6 +2388,7 @@ function goPage(id){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('act'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('act'));
   const pg=document.getElementById('pg-'+id);if(pg)pg.classList.add('act');
+  if(id==='ipcbrowser') renderIpcList();
   document.getElementById('pgTitle').textContent=pgTitles[id]||id;
   document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')?.includes("'"+id+"'"))n.classList.add('act');});
   updateDash();if(id==='feecalc')calcFee();
@@ -2490,62 +2736,238 @@ function printContract(){const text=document.getElementById('contractPreview').t
 function sendContractWA(){const text=document.getElementById('contractPreview').textContent;if(!text||text.includes('Party details bharein')){toast('⚠️ Pehle contract generate karen','err');return;}const ph=prompt('Client WhatsApp number:');if(ph&&ph.length>=10){const msg=encodeURIComponent('⚖️ *LegalAI Pro -- '+selectedContract+'*\n\n'+text.slice(0,800)+'...\n\n_Complete contract advocate se receive karen_');window.open(`https://wa.me/91${ph.replace(/\D/g,'')}?text=${msg}`,'_blank');}}
 
 // ════════ IPC/CrPC BROWSER -- Real Claude API ════════
-async function loadIPC(el,section,title){
-  if(el){document.querySelectorAll('.ipc-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
-  currentIPC=section;
-  document.getElementById('ipcTitle').textContent=section+' -- '+title;
-  document.getElementById('ipcDetail').innerHTML=`<div style="text-align:center;padding:30px"><div class="asp"></div><div style="margin-top:10px;font-size:12px;color:var(--mut)">AI section explain kar raha hai...</div></div>`;
-  const prompt=`Explain Indian law ${section} (${title}) comprehensively for an Indian advocate. Respond in JSON only, no markdown:
-{"section":"${section}","title":"${title}","full_text":"Complete text of the section/provision","explanation":"Clear explanation in simple Hindi-English","punishment":"Punishment/penalty if applicable","bail_status":"Bailable/Non-bailable/NA","cognizable":"Cognizable/Non-cognizable/NA","key_elements":["Element 1 needed to prove","Element 2"],"landmark_cases":[{"case":"Case name","year":"year","holding":"Key principle from this case"}],"common_defenses":["Defense argument 1","Defense argument 2"],"advocate_tips":["Practical tip for advocates","Important consideration"],"related_sections":["Related section 1","Related section 2"]}`;
-  try{
-    const resp=await callClaude({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]});
-    var data=resp;if(data.error)throw new Error(data.error.message);
-    let raw=data.content.map(i=>i.text||'').join('');let c=raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
-    const s=c.indexOf('{'),e=c.lastIndexOf('}');if(s!==-1&&e!==-1)c=c.slice(s,e+1);
-    c=c.replace(/,\s*([}\]])/g,'$1').replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g,'');
-    renderIPCDetail(JSON.parse(c));
-  }catch(err){document.getElementById('ipcDetail').innerHTML=`<div style="color:var(--red);font-size:12px">⚠️ ${err.message}</div>`;}
-}
-function renderIPCDetail(r){
-  let h=`<div class="ipc-title">${r.section||''} -- ${r.title||''}</div>`;
-  if(r.full_text)h+=`<div style="background:var(--card);border:1px solid var(--bdr2);border-radius:9px;padding:12px;margin-bottom:13px;font-size:12px;color:#b0b0d0;line-height:1.7;font-style:italic">"${r.full_text}"</div>`;
-  h+=`<div class="ipc-text" style="margin-bottom:13px">${r.explanation||''}</div>`;
-  h+=`<div style="display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap">`;
-  if(r.bail_status&&r.bail_status!=='NA')h+=`<span class="sev ${r.bail_status==='Bailable'?'sm':'ss'}">${r.bail_status}</span>`;
-  if(r.cognizable&&r.cognizable!=='NA')h+=`<span class="sev ${r.cognizable==='Cognizable'?'ss':'sm'}">${r.cognizable}</span>`;
-  h+=`</div>`;
-  if(r.punishment)h+=`<div class="ipc-penalty"><div style="font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Punishment</div><div style="font-size:12px;font-weight:600;color:var(--red)">${r.punishment}</div></div>`;
-  if(r.key_elements?.length){h+=`<div class="msec" style="margin-top:13px">Key Elements to Prove</div><ul class="al">`;r.key_elements.forEach(e=>{h+=`<li>OK ${e}</li>`;});h+=`</ul>`;}
-  if(r.landmark_cases?.length){h+=`<div class="msec">⚖️ Landmark Cases</div>`;r.landmark_cases.forEach(c=>{h+=`<div style="background:var(--c2);border:1px solid var(--bdr2);border-radius:8px;padding:9px 11px;margin-bottom:6px"><div style="font-size:12px;font-weight:600;color:var(--pur2)">${c.case||''} (${c.year||''})</div><div style="font-size:11px;color:var(--mut);margin-top:2px">${c.holding||''}</div></div>`;});}
-  if(r.advocate_tips?.length){h+=`<div class="msec">💡 Advocate Tips</div><ul class="al gol">`;r.advocate_tips.forEach(t=>{h+=`<li>💡 ${t}</li>`;});h+=`</ul>`;}
-  document.getElementById('ipcDetail').innerHTML=h;
-}
-function searchIPC(){const q=(document.getElementById('ipcSearch')?.value||'').toLowerCase();document.querySelectorAll('.ipc-item').forEach(el=>{el.style.display=el.textContent.toLowerCase().includes(q)?'block':'none';});}
 
-// ════════ FEE CALCULATOR ════════
-function calcFee(){
-  const type=document.getElementById('fc-type')?.value||'civil_simple';
-  const court=document.getElementById('fc-court')?.value||'District Court';
-  const exp=document.getElementById('fc-exp')?.value||'mid';
-  const comp=parseInt(document.getElementById('fc-comp')?.value||'2');
-  const hearings=parseInt(document.getElementById('fc-hear')?.value||'12');
-  const cityMult=parseFloat(document.getElementById('fc-city')?.value||'1.5');
-  const baseFees={civil_simple:15000,civil_complex:35000,criminal_sessions:25000,criminal_hc:50000,criminal_sc:150000,property_dispute:30000,matrimonial:20000,corporate:60000,consumer:8000,labour:12000};
-  const courtMult={'District Court':1,'High Court':2,'Supreme Court':4};
-  const expMult={junior:1,mid:1.8,senior:3.5};
-  const base=(baseFees[type]||20000)*comp*(courtMult[court]||1)*expMult[exp]*cityMult;
-  const retainer=Math.round(base*0.3);
-  const perHear=Math.round(base*0.4/hearings);
-  const filing=Math.round(base*0.15);
-  const docs=Math.round(base*0.15);
-  const total=retainer+perHear*hearings+filing+docs;
-  const fmt=n=>'₹'+n.toLocaleString('en-IN');
-  const setV=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  setV('feeTotal',fmt(total));
-  setV('feeRange',`Estimated: ${fmt(Math.round(total*0.8))} -- ${fmt(Math.round(total*1.3))}`);
-  setV('fb-ret',fmt(retainer));setV('fb-hear',fmt(perHear)+'/hearing');
-  setV('fb-file',fmt(filing));setV('fb-doc',fmt(docs));setV('fb-total',fmt(total));
+// ════════ SECTION DATA ════════
+const IPC_SECTIONS=[
+  // BNS 2023
+  {id:'BNS-103',  label:'BNS 103 — Murder',               cat:'bns',   old:'IPC 302',  title:'Murder',                          tag:'bns'},
+  {id:'BNS-64',   label:'BNS 64 — Rape',                  cat:'bns',   old:'IPC 376',  title:'Rape',                            tag:'bns'},
+  {id:'BNS-318',  label:'BNS 318 — Cheating',             cat:'bns',   old:'IPC 420',  title:'Cheating',                        tag:'bns'},
+  {id:'BNS-85',   label:'BNS 85 — Dowry Cruelty',         cat:'bns',   old:'IPC 498A', title:'Cruelty by Husband/Relatives',    tag:'bns'},
+  {id:'BNS-109',  label:'BNS 109 — Attempt to Murder',    cat:'bns',   old:'IPC 307',  title:'Attempt to Murder',               tag:'bns'},
+  {id:'BNS-74',   label:'BNS 74 — Assault on Woman',      cat:'bns',   old:'IPC 354',  title:'Assault / Outraging Modesty',     tag:'bns'},
+  {id:'BNS-316',  label:'BNS 316 — Breach of Trust',      cat:'bns',   old:'IPC 406',  title:'Criminal Breach of Trust',        tag:'bns'},
+  {id:'BNS-111',  label:'BNS 111 — Organised Crime',      cat:'bns',   old:'New',      title:'Organised Crime (New Section)',   tag:'bns'},
+  {id:'BNS-113',  label:'BNS 113 — Terrorist Act',        cat:'bns',   old:'New',      title:'Terrorist Act (New Section)',     tag:'bns'},
+  {id:'BNS-69',   label:'BNS 69 — Deceptive Marriage',    cat:'bns',   old:'New',      title:'Sexual Intercourse by Deception', tag:'bns'},
+  {id:'BNS-79',   label:'BNS 79 — Stalking',              cat:'bns',   old:'IPC 354D', title:'Stalking',                        tag:'bns'},
+  {id:'BNS-61',   label:'BNS 61 — Abetment of Suicide',   cat:'bns',   old:'IPC 306',  title:'Abetment of Suicide',             tag:'bns'},
+  {id:'BNS-238',  label:'BNS 238 — Kidnapping',           cat:'bns',   old:'IPC 363',  title:'Kidnapping',                      tag:'bns'},
+  {id:'BNS-303',  label:'BNS 303 — Theft',                cat:'bns',   old:'IPC 378',  title:'Theft',                           tag:'bns'},
+  {id:'BNS-310',  label:'BNS 310 — Robbery',              cat:'bns',   old:'IPC 390',  title:'Robbery',                         tag:'bns'},
+  {id:'BNS-308',  label:'BNS 308 — Extortion',            cat:'bns',   old:'IPC 383',  title:'Extortion',                       tag:'bns'},
+  {id:'BNS-351',  label:'BNS 351 — Criminal Intimidation',cat:'bns',   old:'IPC 503',  title:'Criminal Intimidation',           tag:'bns'},
+  {id:'BNS-152',  label:'BNS 152 — Acts Against India',   cat:'bns',   old:'IPC 124A', title:'Sedition Equivalent (New)',       tag:'bns'},
+  // IPC Old
+  {id:'IPC-302',  label:'IPC 302 — Murder',               cat:'ipc',   old:'BNS 103',  title:'Murder',                          tag:'ipc'},
+  {id:'IPC-307',  label:'IPC 307 — Attempt to Murder',    cat:'ipc',   old:'BNS 109',  title:'Attempt to Murder',               tag:'ipc'},
+  {id:'IPC-376',  label:'IPC 376 — Rape',                 cat:'ipc',   old:'BNS 64',   title:'Rape',                            tag:'ipc'},
+  {id:'IPC-420',  label:'IPC 420 — Cheating',             cat:'ipc',   old:'BNS 318',  title:'Cheating',                        tag:'ipc'},
+  {id:'IPC-498A', label:'IPC 498A — Dowry Cruelty',       cat:'ipc',   old:'BNS 85',   title:'Cruelty by Husband',              tag:'ipc'},
+  {id:'IPC-406',  label:'IPC 406 — Breach of Trust',      cat:'ipc',   old:'BNS 316',  title:'Criminal Breach of Trust',        tag:'ipc'},
+  {id:'IPC-354',  label:'IPC 354 — Assault on Woman',     cat:'ipc',   old:'BNS 74',   title:'Assault / Outraging Modesty',     tag:'ipc'},
+  {id:'IPC-306',  label:'IPC 306 — Abetment of Suicide',  cat:'ipc',   old:'BNS 61',   title:'Abetment of Suicide',             tag:'ipc'},
+  {id:'IPC-304B', label:'IPC 304B — Dowry Death',         cat:'ipc',   old:'BNS 80',   title:'Dowry Death',                     tag:'ipc'},
+  {id:'IPC-363',  label:'IPC 363 — Kidnapping',           cat:'ipc',   old:'BNS 238',  title:'Kidnapping',                      tag:'ipc'},
+  {id:'IPC-379',  label:'IPC 379 — Theft',                cat:'ipc',   old:'BNS 303',  title:'Theft',                           tag:'ipc'},
+  {id:'IPC-120B', label:'IPC 120B — Criminal Conspiracy', cat:'ipc',   old:'BNS 61',   title:'Criminal Conspiracy',             tag:'ipc'},
+  {id:'IPC-124A', label:'IPC 124A — Sedition',            cat:'ipc',   old:'BNS 152',  title:'Sedition',                        tag:'ipc'},
+  {id:'IPC-323',  label:'IPC 323 — Voluntarily Hurt',     cat:'ipc',   old:'BNS 115',  title:'Causing Hurt',                    tag:'ipc'},
+  {id:'IPC-504',  label:'IPC 504 — Intentional Insult',   cat:'ipc',   old:'BNS 352',  title:'Intentional Insult',              tag:'ipc'},
+  {id:'IPC-509',  label:'IPC 509 — Insult to Woman',      cat:'ipc',   old:'BNS 79',   title:'Word / Gesture to Insult Woman',  tag:'ipc'},
+  // BNSS 2023
+  {id:'BNSS-482', label:'BNSS 482 — Anticipatory Bail',   cat:'bnss',  old:'CrPC 438', title:'Anticipatory Bail',               tag:'bnss'},
+  {id:'BNSS-483', label:'BNSS 483 — Regular Bail',        cat:'bnss',  old:'CrPC 439', title:'Regular Bail (Sessions/HC)',      tag:'bnss'},
+  {id:'BNSS-479', label:'BNSS 479 — Default Bail',        cat:'bnss',  old:'CrPC 167', title:'Default Bail (60/90 days)',       tag:'bnss'},
+  {id:'BNSS-187', label:'BNSS 187 — Police Remand',       cat:'bnss',  old:'CrPC 167', title:'Remand Procedure',                tag:'bnss'},
+  {id:'BNSS-173', label:'BNSS 173 — FIR / Zero FIR',      cat:'bnss',  old:'CrPC 154', title:'FIR — Zero FIR Mandatory',       tag:'bnss'},
+  {id:'BNSS-193', label:'BNSS 193 — Chargesheet',         cat:'bnss',  old:'CrPC 173', title:'Chargesheet Filing',              tag:'bnss'},
+  {id:'BNSS-360', label:'BNSS 360 — Plea Bargaining',     cat:'bnss',  old:'CrPC 265A',title:'Plea Bargaining',                 tag:'bnss'},
+  {id:'BNSS-265', label:'BNSS 265 — Witness Protection',  cat:'bnss',  old:'New',      title:'Witness Protection (New)',        tag:'bnss'},
+  {id:'BNSS-23',  label:'BNSS 23 — Trial in Absentia',    cat:'bnss',  old:'New',      title:'Trial of Proclaimed Offender',   tag:'bnss'},
+  {id:'BNSS-43',  label:'BNSS 43 — Arrest Rights',        cat:'bnss',  old:'CrPC 41',  title:'Arrest — Grounds Mandatory',     tag:'bnss'},
+  // CrPC Old
+  {id:'CrPC-438', label:'CrPC 438 — Anticipatory Bail',   cat:'crpc',  old:'BNSS 482', title:'Anticipatory Bail',               tag:'crpc'},
+  {id:'CrPC-439', label:'CrPC 439 — Regular Bail',        cat:'crpc',  old:'BNSS 483', title:'Regular Bail',                    tag:'crpc'},
+  {id:'CrPC-167', label:'CrPC 167 — Default Bail',        cat:'crpc',  old:'BNSS 479', title:'Default Bail',                    tag:'crpc'},
+  {id:'CrPC-154', label:'CrPC 154 — FIR',                 cat:'crpc',  old:'BNSS 173', title:'First Information Report',        tag:'crpc'},
+  {id:'CrPC-482', label:'CrPC 482 — HC Inherent Power',   cat:'crpc',  old:'BNSS 528', title:'High Court Inherent Powers',      tag:'crpc'},
+  {id:'CrPC-125', label:'CrPC 125 — Maintenance',         cat:'crpc',  old:'',         title:'Maintenance to Wife/Child',       tag:'crpc'},
+  {id:'CrPC-164', label:'CrPC 164 — Confession/Statement',cat:'crpc',  old:'BNSS 183', title:'Statement before Magistrate',     tag:'crpc'},
+  {id:'CrPC-173', label:'CrPC 173 — Chargesheet',         cat:'crpc',  old:'BNSS 193', title:'Police Report / Chargesheet',     tag:'crpc'},
+  // CPC
+  {id:'CPC-9',    label:'CPC S.9 — Civil Jurisdiction',   cat:'cpc',   old:'',         title:'Civil Court Jurisdiction',        tag:'cpc'},
+  {id:'CPC-O7',   label:'CPC Order 7 — Plaint',           cat:'cpc',   old:'',         title:'Plaint — Rules for Filing',       tag:'cpc'},
+  {id:'CPC-O8',   label:'CPC Order 8 — Written Statement',cat:'cpc',   old:'',         title:'Written Statement Rules',         tag:'cpc'},
+  {id:'CPC-O39',  label:'CPC Order 39 — Injunction',      cat:'cpc',   old:'',         title:'Temporary Injunction',            tag:'cpc'},
+  {id:'CPC-O37',  label:'CPC Order 37 — Summary Suit',    cat:'cpc',   old:'',         title:'Summary Suit (Money Recovery)',   tag:'cpc'},
+  {id:'CPC-O21',  label:'CPC Order 21 — Execution',       cat:'cpc',   old:'',         title:'Execution of Decree',             tag:'cpc'},
+  {id:'CPC-89',   label:'CPC S.89 — ADR / Mediation',     cat:'cpc',   old:'',         title:'Mediation / Arbitration Referral',tag:'cpc'},
+  // Special Acts
+  {id:'NI-138',   label:'NI Act 138 — Cheque Bounce',     cat:'special',old:'',        title:'Dishonour of Cheque',             tag:'special'},
+  {id:'NI-141',   label:'NI Act 141 — Company Liability', cat:'special',old:'',        title:'Company Director Liability Cheque',tag:'special'},
+  {id:'POCSO-4',  label:'POCSO S.4 — Penetrative Assault',cat:'special',old:'',        title:'POCSO Penetrative Sexual Assault',tag:'special'},
+  {id:'POCSO-7',  label:'POCSO S.7 — Sexual Assault',     cat:'special',old:'',        title:'POCSO Sexual Assault on Child',   tag:'special'},
+  {id:'POCSO-11', label:'POCSO S.11 — Harassment Child',  cat:'special',old:'',        title:'POCSO Sexual Harassment Child',   tag:'special'},
+  {id:'SCST-3',   label:'SC/ST Act S.3 — Atrocities',     cat:'special',old:'',        title:'SC/ST Prevention of Atrocities',  tag:'special'},
+  {id:'NDPS-20',  label:'NDPS S.20 — Cannabis',           cat:'special',old:'',        title:'NDPS Cannabis Offences',          tag:'special'},
+  {id:'NDPS-21',  label:'NDPS S.21 — Hard Drugs',         cat:'special',old:'',        title:'NDPS Hard Drug Offences',         tag:'special'},
+  {id:'NDPS-37',  label:'NDPS S.37 — Bail Restriction',   cat:'special',old:'',        title:'NDPS Stringent Bail Conditions',  tag:'special'},
+  {id:'PMLA-3',   label:'PMLA S.3 — Money Laundering',    cat:'special',old:'',        title:'Money Laundering Offence',        tag:'special'},
+  {id:'PMLA-19',  label:'PMLA S.19 — ED Arrest',          cat:'special',old:'',        title:'Enforcement Directorate Arrest',  tag:'special'},
+  {id:'UAPA-13',  label:'UAPA S.13 — Unlawful Activity',  cat:'special',old:'',        title:'Unlawful Activities Prevention',  tag:'special'},
+  {id:'UAPA-43D', label:'UAPA 43D — Bail UAPA',           cat:'special',old:'',        title:'UAPA Bail Conditions',            tag:'special'},
+  // Family Law
+  {id:'HMA-13',   label:'HMA S.13 — Divorce',             cat:'family', old:'',        title:'Hindu Marriage Act Divorce',      tag:'special'},
+  {id:'HMA-13B',  label:'HMA 13B — Mutual Divorce',       cat:'family', old:'',        title:'Mutual Consent Divorce',          tag:'special'},
+  {id:'HMA-24',   label:'HMA S.24 — Maintenance',         cat:'family', old:'',        title:'Interim Maintenance',             tag:'special'},
+  {id:'HMA-26',   label:'HMA S.26 — Custody',             cat:'family', old:'',        title:'Child Custody Order',             tag:'special'},
+  {id:'DV-12',    label:'DV Act S.12 — Protection Order', cat:'family', old:'',        title:'Domestic Violence Protection',    tag:'special'},
+  {id:'DV-17',    label:'DV Act S.17 — Residence',        cat:'family', old:'',        title:'Right to Shared Household',       tag:'special'},
+  {id:'DA-3',     label:'Dowry Act S.3 — Giving Dowry',   cat:'family', old:'',        title:'Giving / Taking Dowry',           tag:'special'},
+  {id:'MWPSA',    label:'Muslim Women Protection Act',     cat:'family', old:'',        title:'Triple Talaq — Protection Act',   tag:'special'},
+  // Property
+  {id:'TPA-54',   label:'TPA S.54 — Sale',                cat:'property',old:'',       title:'Transfer of Property Sale',       tag:'cpc'},
+  {id:'TPA-58',   label:'TPA S.58 — Mortgage',            cat:'property',old:'',       title:'Mortgage Types',                  tag:'cpc'},
+  {id:'TPA-105',  label:'TPA S.105 — Lease',              cat:'property',old:'',       title:'Lease of Property',               tag:'cpc'},
+  {id:'SRA-10',   label:'Specific Relief S.10',           cat:'property',old:'',       title:'Specific Performance of Contract',tag:'cpc'},
+  {id:'SRA-38',   label:'Specific Relief S.38 — Injunction',cat:'property',old:'',    title:'Perpetual Injunction',            tag:'cpc'},
+  {id:'RERA-18',  label:'RERA S.18 — Builder Liability',  cat:'property',old:'',       title:'RERA Builder Compensation',       tag:'special'},
+  // Labour
+  {id:'IDA-25F',  label:'ID Act S.25F — Retrenchment',    cat:'labour', old:'',        title:'Retrenchment Compensation',       tag:'special'},
+  {id:'IDA-2A',   label:'ID Act S.2A — Termination',      cat:'labour', old:'',        title:'Individual Dismissal Dispute',    tag:'special'},
+  {id:'EPF-7A',   label:'EPF Act S.7A — Inquiry',         cat:'labour', old:'',        title:'EPF Determination of Money',      tag:'special'},
+  // Cyber
+  {id:'IT-66',    label:'IT Act S.66 — Hacking',          cat:'cyber',  old:'',        title:'Computer Related Offences',       tag:'special'},
+  {id:'IT-67',    label:'IT Act S.67 — Obscene Material', cat:'cyber',  old:'',        title:'Obscene Material Online',         tag:'special'},
+  {id:'IT-43',    label:'IT Act S.43 — Data Breach',      cat:'cyber',  old:'',        title:'Penalty for Data Breach',         tag:'special'},
+  {id:'IT-72',    label:'IT Act S.72 — Privacy',          cat:'cyber',  old:'',        title:'Privacy Breach Penalty',          tag:'special'},
+];
+
+const CAT_LABELS={bns:'BNS 2023 (New)',bnss:'BNSS 2023 (New)',ipc:'IPC (Old Law)',crpc:'CrPC (Old Law)',cpc:'CPC',special:'Special Acts',family:'Family Law',property:'Property Law',labour:'Labour Law',cyber:'Cyber Law'};
+
+function renderIpcList(q){
+  var list=document.getElementById('ipcList');
+  if(!list) return;
+  q=(q||'').toLowerCase();
+  var filtered=IPC_SECTIONS.filter(function(s){
+    var mc=currentCat==='all'||s.cat===currentCat;
+    var mq=!q||s.label.toLowerCase().indexOf(q)!==-1||s.title.toLowerCase().indexOf(q)!==-1||(s.old&&s.old.toLowerCase().indexOf(q)!==-1);
+    return mc&&mq;
+  });
+  if(!filtered.length){list.innerHTML='<div style="font-size:12px;color:var(--mut);padding:14px">Koi section nahi mila</div>';return;}
+  var html='',lastCat='';
+  filtered.forEach(function(s){
+    if(s.cat!==lastCat){
+      if(currentCat==='all') html+='<div style="font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;padding:10px 6px 4px;font-weight:700">'+(CAT_LABELS[s.cat]||s.cat)+'</div>';
+      lastCat=s.cat;
+    }
+    var oldTxt=s.old&&s.old!=='New'?' <span style="font-size:9px;color:var(--mut)">= '+s.old+'</span>':'';
+    var newBadge=(s.old==='New')?' <span style="font-size:9px;background:rgba(0,212,130,.2);color:#00d482;padding:1px 5px;border-radius:6px">NEW</span>':'';
+    html+='<div class="ipc-item'+(currentIPC===s.id?' active':'')+'" onclick="loadIPC(this,\''+s.id+'\',\''+s.title.replace(/'/g,"\\'")+'\')">'
+      +'<span>'+s.label+oldTxt+newBadge+'</span>'
+      +'<span class="ipc-badge '+s.tag+'">'+s.tag.toUpperCase()+'</span>'
+      +'</div>';
+  });
+  list.innerHTML=html;
 }
+
+function filterCat(btn,cat){
+  currentCat=cat;
+  document.querySelectorAll('.ipc-tab').forEach(function(t){t.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  renderIpcList((document.getElementById('ipcSearch')||{}).value||'');
+}
+
+function searchIPC(){
+  renderIpcList((document.getElementById('ipcSearch')||{}).value||'');
+}
+
+function loadCustomIPC(){
+  var q=(document.getElementById('ipcSearch')||{}).value.trim();
+  if(!q){toast('Section name ya number type karo pehle','err');return;}
+  loadIPC(null,q,q);
+}
+
+function copyIPC(){
+  var text=document.getElementById('ipcDetail').innerText;
+  navigator.clipboard&&navigator.clipboard.writeText(text).then(function(){toast('Section copied!','grn');});
+}
+
+function printIPC(){
+  var title=document.getElementById('ipcTitle').textContent;
+  var content=document.getElementById('ipcDetail').innerHTML;
+  var w=window.open('','_blank','width=700,height=900');
+  w.document.write('<html><head><title>'+title+'</title><style>body{font-family:Georgia,serif;padding:30px;max-width:800px;margin:0 auto;line-height:1.7}h1{color:#1a0a3e}h3{color:#7850ff}</style></head><body><h1>'+title+'</h1>'+content+'<hr><p style="font-size:11px;color:#999">LegalAI Pro | Indian Law Reference</p></body></html>');
+  w.document.close();w.print();
+}
+
+function addToCase(){
+  var title=document.getElementById('ipcTitle').textContent;
+  var notes=DB.get('caseNotes')||[];
+  notes.push({section:title,date:new Date().toLocaleDateString('en-IN')});
+  DB.set('caseNotes',notes);
+  toast('Section case notes mein add hua!','grn');
+}
+
+async function loadIPC(el,sectionId,title){
+  if(el){document.querySelectorAll('.ipc-item').forEach(function(i){i.classList.remove('active');});el.classList.add('active');}
+  currentIPC=sectionId;
+  document.getElementById('ipcTitle').textContent=sectionId+' -- '+title;
+  document.getElementById('ipcDetail').innerHTML='<div style="text-align:center;padding:30px"><div class="asp"></div><div style="margin-top:10px;font-size:12px;color:var(--mut)">AI section explain kar raha hai...</div></div>';
+  var sec=IPC_SECTIONS.find(function(s){return s.id===sectionId;});
+  var crossRef=sec&&sec.old?'\nCross reference: '+sec.old+' (equivalent section)':'';
+  var lawCtx=(sec&&(sec.cat==='bns'||sec.cat==='bnss'))?'This is under NEW Indian law (BNS/BNSS 2023) effective July 1 2024. Mention old IPC/CrPC equivalent.':'';
+  var prompt='You are an expert Indian advocate. Explain '+sectionId+' ('+title+') comprehensively for Indian lawyers. '+lawCtx+crossRef+'\nRespond ONLY with valid JSON, no markdown:\n{"section":"'+sectionId+'","title":"Full title","act":"Full Act name","effective_from":"Date","bailable":"Bailable or Non-Bailable","cognizable":"Cognizable or Non-Cognizable","compoundable":"Yes or No","triable_by":"Court","punishment":"Detailed punishment with years","full_text":"Statutory text brief","ingredients":["element1","element2","element3"],"landmark_cases":[{"case":"Name v Name Year","court":"Court name","held":"Key holding"}],"advocate_tips":["tip1","tip2","tip3"],"bail_strategy":"How to approach bail","related_sections":["sec1","sec2"],"new_law_equivalent":"Equivalent in BNS/BNSS or IPC/CrPC"}';
+  try{
+    var resp=await callClaude({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]});
+    var raw=resp.content.map(function(i){return i.text||'';}).join('');
+    var clean=raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+    var s=clean.indexOf('{'),e=clean.lastIndexOf('}');
+    if(s!==-1&&e!==-1) clean=clean.slice(s,e+1);
+    var d=JSON.parse(clean);
+    var isNew=d.act&&(d.act.indexOf('BNS')!==-1||d.act.indexOf('BNSS')!==-1||d.act.indexOf('Bharatiya')!==-1);
+    var topBanner=isNew
+      ?'<div style="background:rgba(0,212,130,.1);border:1px solid rgba(0,212,130,.3);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#00d482;font-weight:600">&#127381; NEW LAW &mdash; '+d.act+(d.new_law_equivalent?'<br><span style="color:var(--mut);font-weight:400">Old equivalent: '+d.new_law_equivalent+'</span>':'')+'</div>'
+      :(d.new_law_equivalent?'<div style="background:rgba(255,150,50,.08);border:1px solid rgba(255,150,50,.2);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#ff9632">&#9888; Old Law &mdash; New equivalent: <strong>'+d.new_law_equivalent+'</strong> (BNS/BNSS 2023)</div>':'');
+    var html=topBanner
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">'
+      +'<div style="background:var(--c2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--mut);margin-bottom:3px">Bail</div><div style="font-size:12px;font-weight:700;color:'+(( d.bailable||'').indexOf('Non')!==-1?'var(--red)':'#00d482')+'">'+( d.bailable||'--')+'</div></div>'
+      +'<div style="background:var(--c2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--mut);margin-bottom:3px">Type</div><div style="font-size:12px;font-weight:700;color:var(--cyn)">'+(d.cognizable||'--')+'</div></div>'
+      +'<div style="background:var(--c2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--mut);margin-bottom:3px">Court</div><div style="font-size:11px;font-weight:700;color:var(--pur2)">'+((d.triable_by||'--').split(' ')[0])+'</div></div>'
+      +'</div>'
+      +'<div style="background:var(--c2);border-radius:10px;padding:12px;margin-bottom:12px"><div style="font-size:10px;color:var(--mut);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Punishment</div><div style="font-size:13px;font-weight:700;color:var(--red)">'+(d.punishment||'--')+'</div></div>'
+      +'<div style="background:var(--c2);border-radius:10px;padding:12px;margin-bottom:12px"><div style="font-size:11px;color:var(--mut);margin-bottom:6px;font-weight:700">Statutory Text</div><div style="font-size:12px;line-height:1.7;font-style:italic">'+(d.full_text||'')+'</div></div>';
+    if(d.ingredients&&d.ingredients.length){
+      html+='<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--gold2);font-weight:700;margin-bottom:7px">Essential Ingredients</div>';
+      d.ingredients.forEach(function(x,i){html+='<div style="display:flex;gap:8px;margin-bottom:5px"><span style="background:var(--gold2);color:#1a0a3e;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">'+(i+1)+'</span><span style="font-size:12px;line-height:1.5">'+x+'</span></div>';});
+      html+='</div>';
+    }
+    if(d.landmark_cases&&d.landmark_cases.length){
+      html+='<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--gold2);font-weight:700;margin-bottom:7px">Landmark Cases</div>';
+      d.landmark_cases.forEach(function(c){html+='<div style="background:var(--c2);border-left:3px solid var(--gold2);border-radius:0 8px 8px 0;padding:10px;margin-bottom:7px"><div style="font-size:12px;font-weight:700">'+(c.case||'')+'</div><div style="font-size:10px;color:var(--cyn)">'+(c.court||'')+'</div><div style="font-size:11px;color:var(--mut);margin-top:3px">'+(c.held||'')+'</div></div>';});
+      html+='</div>';
+    }
+    if(d.advocate_tips&&d.advocate_tips.length){
+      html+='<div style="margin-bottom:12px"><div style="font-size:11px;color:var(--pur2);font-weight:700;margin-bottom:7px">Advocate Tips</div>';
+      d.advocate_tips.forEach(function(t){html+='<div style="display:flex;gap:7px;margin-bottom:5px"><span style="color:var(--pur2)">&#10003;</span><span style="font-size:12px">'+t+'</span></div>';});
+      html+='</div>';
+    }
+    if(d.bail_strategy){
+      html+='<div style="background:rgba(120,80,255,.08);border:1px solid rgba(120,80,255,.2);border-radius:10px;padding:11px;margin-bottom:12px"><div style="font-size:11px;color:var(--pur2);font-weight:700;margin-bottom:5px">Bail Strategy</div><div style="font-size:12px;line-height:1.6">'+d.bail_strategy+'</div></div>';
+    }
+    if(d.related_sections&&d.related_sections.length){
+      html+='<div><div style="font-size:11px;color:var(--mut);font-weight:700;margin-bottom:7px">Related Sections</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
+      d.related_sections.forEach(function(r){html+='<span onclick="loadIPC(null,\''+r+'\',\''+r+'\')" style="background:var(--c2);border:1px solid var(--bdr2);border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600">'+r+'</span>';});
+      html+='</div></div>';
+    }
+    document.getElementById('ipcDetail').innerHTML=html;
+    if(typeof addAudit==='function') addAudit('ipcbrowser','Section viewed: '+sectionId);
+  }catch(err){
+    document.getElementById('ipcDetail').innerHTML='<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:13px;color:var(--red);font-size:12px">Error: '+err.message+'</div>';
+  }
+}
+
 async function generateFeeQuote(){
   const type=document.getElementById('fc-type')?.value||'civil_simple';
   const total=document.getElementById('feeTotal')?.textContent||'--';
@@ -2592,20 +3014,37 @@ function toast(msg,type='success',dur=3000){
 
 // === MISSING FUNCTIONS ===
 function doRegister(){
-  var nm=(document.getElementById('reg-nm')||{}).value||'';
-  var em=(document.getElementById('reg-em')||{}).value||'';
-  var pw=(document.getElementById('reg-pw')||{}).value||'';
-  nm=nm.trim();em=em.trim();
+  var nm=(document.getElementById('reg-nm')||{}).value.trim();
+  var em=(document.getElementById('reg-em')||{}).value.trim();
+  var pw=(document.getElementById('reg-pw')||{}).value;
   if(!nm||!em||!pw){toast('Sabhi fields bharein','err');return;}
   if(pw.length<6){toast('Password 6+ characters hona chahiye','err');return;}
+  if(fbAuth){
+    fbAuth.createUserWithEmailAndPassword(em,pw).then(function(c){
+      currentUser=c.user;
+      c.user.updateProfile({displayName:nm});
+      var spec=(document.getElementById('reg-sp')||{}).value||'Civil Law';
+      var p={name:nm,email:em,spec:spec,clinic:'My Law Firm',address:'India',phone:''};
+      DB.set('doc',p);DB.set('plan','basic');
+      saveUserData(c.user.uid,{profile:p,plan:'basic',email:em,createdAt:new Date().toISOString()});
+      toast('Account created! Welcome!','gold');showApp();
+    }).catch(function(e){
+      var msg='Registration failed';
+      if(e.code==='auth/email-already-in-use') msg='Email already hai - login karein';
+      else if(e.code==='auth/weak-password') msg='Aur strong password daalo';
+      toast(msg,'err');
+    });
+    return;
+  }
   var users=DB.get('users')||{};
   if(users[em]){toast('Email already registered hai','err');return;}
-  users[em]={name:nm,email:em,password:pw,spec:'Civil Law',plan:'basic'};
+  users[em]={name:nm,email:em,password:pw,plan:'basic'};
   DB.set('users',users);
-  DB.set('doc',{name:nm,email:em,spec:'Civil Law',clinic:'My Law Firm',address:'India',phone:'',plan:'basic'});
+  DB.set('doc',{name:nm,email:em,spec:'Civil Law',clinic:'My Law Firm',address:'India',phone:''});
   toast('Registration successful! Login karein.','grn');
   if(typeof goTo==='function')goTo('S-login');
 }
+
 function saveClient(){
   var nm=(document.getElementById('ec-nm')||{}).value||'';
   var mob=(document.getElementById('ec-mob')||{}).value||'';
@@ -2647,6 +3086,7 @@ function renderApts(){
 }
 
 function initAll(){
+  initFirebase();
   updateDash();renderRecent();renderTopDx('topDx');renderTopDx('topDx2');renderBarChart();
   renderClients();initHearings();initAISettings();initNotifSettings();renderDocList();
   document.getElementById('lastRef').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
